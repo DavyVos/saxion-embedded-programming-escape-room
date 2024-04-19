@@ -1,3 +1,6 @@
+#include <TM1638plus.h>
+#include <LiquidCrystal_I2C.h>
+
 #define PIN_BUZZER 3
 #define FREQ_LOW 500
 #define FREQ_HIGH 1200
@@ -9,14 +12,18 @@
 #define TM_CLOCK 6
 #define TM_DIO 7
 
-#include <TM1638plus.h>
-
 int buttonState = 0;
 
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 TM1638plus tm(TM_STROBE, TM_CLOCK, TM_DIO);
 
 void setup()
 {
+    lcd.init();
+    lcd.backlight();
+    lcd.setCursor(3,0);
+    lcd.print("Hello world!");
+
     // initialize the pushbutton pin as an input:
     pinMode(BUTTON_PIN, INPUT);
     pinMode(WIPER_PIN, INPUT);
@@ -29,26 +36,27 @@ void setup()
     int freqchange = (FREQ_HIGH - FREQ_LOW) / WHOOP_STEPS;
     int toneDuration = WHOOP_DURATION / WHOOP_STEPS;
 
-    // for (int i = 0; i < 10; i++)
-    // {
-    //     for (int freq = FREQ_LOW; freq <= FREQ_HIGH; freq += freqchange)
-    //     {
-    //         // read the state of the pushbutton value:
-    //         buttonState = digitalRead(BUTTON_PIN);
-    //         // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    //         if (buttonState == HIGH)
-    //         {
-    //             // turn LED on:
-    //             tone(PIN_BUZZER, freq, toneDuration);
-    //         }
-    //         delay(toneDuration);
-    //     }
-    //     delay(500);
-    // }
+    for (int i = 0; i < 10; i++)
+    {
+        for (int freq = FREQ_LOW; freq <= FREQ_HIGH; freq += freqchange)
+        {
+            // read the state of the pushbutton value:
+            buttonState = digitalRead(BUTTON_PIN);
+            // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+            if (buttonState == HIGH)
+            {
+                // turn LED on:
+                tone(PIN_BUZZER, freq, toneDuration);
+            }
+            delay(toneDuration);
+        }
+        delay(500);
+    }
 }
 
 void loop()
 {
+    // lcd.println("Hello world!");
     int wiperValue = analogRead(WIPER_PIN);
     Serial.printf("%d --> %d mV\n", wiperValue,
                   map(wiperValue, 20, 1023, 0, 3300));
