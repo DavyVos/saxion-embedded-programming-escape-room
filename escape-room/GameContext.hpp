@@ -46,6 +46,8 @@ public:
     void AddTask(Task t);
     void clearTasks();
     uint8_t getDebouncedTmReading();
+    void startGlobalTimer();
+    long getGlobalTime();
 };
 
 #endif // GAME_CONTEXT

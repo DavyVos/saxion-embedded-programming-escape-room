@@ -1,6 +1,6 @@
 #include "MemoryGame.hpp"
 #include "NextGame.hpp"
-#include "LockPicking.hpp"
+#include "BombDefusal.hpp"
 #include "Arduino.h"
 
 String convertIntArrayToString(int *intArray, int size)
@@ -64,7 +64,6 @@ void MemoryGame::startGame(GameContext *context)
     fillRandomSequence();
     currentRound = 0;
     currentKey = 0;
-
 }
 
 void MemoryGame::update(GameContext *context)
@@ -79,6 +78,10 @@ void MemoryGame::update(GameContext *context)
         Serial.println(firstNumbers);
         context->Lcd->println(firstNumbers);
         startOfRound = context->CurrentTimeStamp;
+        while(context->Keyboard->available())
+        {
+            context->Keyboard->read();
+        }
     }
 
     if (true == context->Keyboard->available() && displayTime + 100 < startOfRound)
@@ -133,5 +136,5 @@ void MemoryGame::stopGame(GameContext *context)
 
 void MemoryGame::nextGame(GameContext *context)
 {
-    context->NextGame(new NextGame(new LockPicking()));
+    context->NextGame(new NextGame(new BombDefusal()));
 }

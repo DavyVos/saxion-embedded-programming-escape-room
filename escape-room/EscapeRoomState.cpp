@@ -18,6 +18,7 @@ void EscapeRoomState::update(GameContext *context)
     if (digitalRead(context->Button) == HIGH) {
         Serial.println("loading next game");
         this->nextGame(context);
+        context->startGlobalTimer();
     }
 }
 

@@ -1,7 +1,9 @@
 #include "GameContext.hpp"
 #include "EscapeRoomState.hpp"
+#include "Defeat.hpp"
 
 bool firstRender = true;
+long globalTimerStart = 0;
 
 GameContext::GameContext(
     State *currentState,
@@ -39,6 +41,11 @@ void GameContext::Update()
     {
         this->tasks[i].execute();
     }
+
+    if(600000 < this->CurrentTimeStamp - this->getGlobalTime())
+    {
+        this->GameOver();
+    }
 }
 
 void GameContext::StopGame()
@@ -57,7 +64,7 @@ void GameContext::GameOver()
 {
     this->Lcd->clear();
     firstRender = true;
-    this->CurrentState = new EscapeRoomState();
+    this->CurrentState = new Defeat();
 }
 
 void GameContext::AddTask(Task t)
@@ -71,6 +78,16 @@ void GameContext::AddTask(Task t)
 void GameContext::clearTasks()
 {
     this->numTasks = 0;
+}
+
+void GameContext::startGlobalTimer()
+{
+    globalTimerStart = this->CurrentTimeStamp;
+}
+
+long GameContext::getGlobalTime()
+{
+    return globalTimerStart;
 }
 
 uint8_t GameContext::getDebouncedTmReading()

@@ -12,8 +12,13 @@ void NextGame::startGame(GameContext *context)
 
 void NextGame::update(GameContext *context)
 {
+    context->Tm->displayIntNum(6000000 - context->CurrentTimeStamp - context->getGlobalTime());
     if (digitalRead(context->Button) == HIGH)
     {
+        context->Lcd->clear();
+        context->Lcd->setCursor(0, 0);
+        context->Tm->reset();
+        context->clearTasks();
         Serial.println("loading next game");
         this->nextGame(context);
     }
